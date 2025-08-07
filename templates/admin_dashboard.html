@@ -27,8 +27,28 @@
         <li><strong>Uruguaiana:</strong> {{ total_uruguaiana }} litros</li>
         <li><strong>Bagé:</strong> {{ total_bage }} litros</li>
     </ul>
+
+    <!-- Exibição de registros das bases -->
+    <h3>Registros de Abastecimento</h3>
+    <div>
+        <strong>Uruguaiana</strong>
+        <ul>
+            {% for registro in registros_uruguaiana %}
+                <li>{{ registro.data }} - {{ registro.onibus }} - {{ registro.litros }} litros</li>
+            {% endfor %}
+        </ul>
+
+        <strong>Bagé</strong>
+        <ul>
+            {% for registro in registros_bage %}
+                <li>{{ registro.data }} - {{ registro.onibus }} - {{ registro.litros }} litros</li>
+            {% endfor %}
+        </ul>
+    </div>
+
 </div>
 
 </body>
 </html>
+
 

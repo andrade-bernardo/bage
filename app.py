@@ -55,10 +55,15 @@ def admin_dashboard():
     
     # Carrega os totais de abastecimento para as bases
     dados = carregar_dados()
-    total_uruguaiana = sum(registro['litros'] for registro in dados if registro['base'] == 'uruguaiana')
-    total_bage = sum(registro['litros'] for registro in dados if registro['base'] == 'bage')
     
-    return render_template('admin_dashboard.html', total_uruguaiana=total_uruguaiana, total_bage=total_bage)
+    bases = ['uruguaiana', 'bage']  # Bases a serem visualizadas pelo admin
+    bases_dados = {}
+    
+    for base in bases:
+        total_litros = sum(registro['litros'] for registro in dados if registro['base'] == base)
+        bases_dados[base] = total_litros  # Armazena o total de litros de cada base
+    
+    return render_template('admin_dashboard.html', bases_dados=bases_dados)
 
 # Página do dashboard para a base
 @app.route('/dashboard/<base>', methods=['GET', 'POST'])
@@ -127,4 +132,5 @@ def edit_registro(base, id):
     return render_template('editar.html', registro=registro)
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))  # Para render e produção
+    app.run(debug=True, host='0.0.0.0', port=5000)
+
