@@ -30,22 +30,27 @@
 
     <!-- Exibição de registros das bases -->
     <h3>Registros de Abastecimento</h3>
-    <div>
-        <strong>Uruguaiana</strong>
-        <ul>
-            {% for registro in registros_uruguaiana %}
-                <li>{{ registro.data }} - {{ registro.onibus }} - {{ registro.litros }} litros</li>
-            {% endfor %}
-        </ul>
+    <h4>Uruguaiana</h4>
+    <ul>
+        {% for registro in registros_uruguaiana %}
+        <li>
+            {{ registro.data }} - {{ registro.onibus }} - {{ registro.litros }} litros 
+            <a href="{{ url_for('edit_registro', base='uruguaiana', id=registro.id) }}">Editar</a> |
+            <a href="{{ url_for('delete_registro', base='uruguaiana', id=registro.id) }}" onclick="return confirm('Tem certeza que deseja excluir?')">Excluir</a>
+        </li>
+        {% endfor %}
+    </ul>
 
-        <strong>Bagé</strong>
-        <ul>
-            {% for registro in registros_bage %}
-                <li>{{ registro.data }} - {{ registro.onibus }} - {{ registro.litros }} litros</li>
-            {% endfor %}
-        </ul>
-    </div>
-
+    <h4>Bagé</h4>
+    <ul>
+        {% for registro in registros_bage %}
+        <li>
+            {{ registro.data }} - {{ registro.onibus }} - {{ registro.litros }} litros 
+            <a href="{{ url_for('edit_registro', base='bage', id=registro.id) }}">Editar</a> |
+            <a href="{{ url_for('delete_registro', base='bage', id=registro.id) }}" onclick="return confirm('Tem certeza que deseja excluir?')">Excluir</a>
+        </li>
+        {% endfor %}
+    </ul>
 </div>
 
 </body>

@@ -2,7 +2,6 @@ from flask import Flask, render_template, request, redirect, url_for, flash, ses
 import json
 import os
 from sheets import enviar_para_google_sheets, carregar_dados, salvar_dados
-import gunicorn
 
 app = Flask(__name__)
 app.secret_key = "segredo"  # Usado para sessões (flash messages)
@@ -53,17 +52,22 @@ def admin_dashboard():
     if 'tipo_usuario' not in session or session['tipo_usuario'] != 'admin':
         return redirect(url_for('login'))  # Redireciona para login se não for admin
     
-    # Carrega os totais de abastecimento para as bases
+    # Carrega os dados de abastecimento
     dados = carregar_dados()
     
     bases = ['uruguaiana', 'bage']  # Bases a serem visualizadas pelo admin
     bases_dados = {}
+    registros_uruguaiana = [registro for registro in dados if registro['base'] == 'uruguaiana']
+    registros_bage = [registro for registro in dados if registro['base'] == 'bage']
     
-    for base in bases:
-        total_litros = sum(registro['litros'] for registro in dados if registro['base'] == base)
-        bases_dados[base] = total_litros  # Armazena o total de litros de cada base
+    total_uruguaiana = sum(registro['litros'] for registro in registros_uruguaiana)
+    total_bage = sum(registro['litros'] for registro in registros_bage)
     
-    return render_template('admin_dashboard.html', bases_dados=bases_dados)
+    return render_template('admin_dashboard.html', 
+                           registros_uruguaiana=registros_uruguaiana, 
+                           registros_bage=registros_bage, 
+                           total_uruguaiana=total_uruguaiana, 
+                           total_bage=total_bage)
 
 # Página do dashboard para a base
 @app.route('/dashboard/<base>', methods=['GET', 'POST'])
@@ -112,7 +116,7 @@ def delete_registro(base, id):
     dados = [registro for registro in dados if not (registro['base'] == base and registro['id'] == id)]
     salvar_dados(dados)
     flash('Registro excluído com sucesso!', 'success')
-    return redirect(url_for('dashboard', base=base))
+    return redirect(url_for('admin_dashboard'))  # Redireciona para a página de admin
 
 # Editar um registro
 @app.route('/edit/<base>/<int:id>', methods=['GET', 'POST'])
@@ -127,10 +131,9 @@ def edit_registro(base, id):
         registro['responsavel'] = request.form['responsavel']
         salvar_dados(dados)
         flash('Registro atualizado com sucesso!', 'success')
-        return redirect(url_for('dashboard', base=base))
+        return redirect(url_for('admin_dashboard'))  # Redireciona para a página de admin
     
     return render_template('editar.html', registro=registro)
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
-
