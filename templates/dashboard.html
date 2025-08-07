@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Controle de Abastecimento</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="container">
+    <h1>Controle de Abastecimento - {{ base }}</h1>
+
+    <!-- Botão de Logout -->
+    <a href="{{ url_for('logout') }}">
+        <button class="logout-btn">Logout</button>
+    </a>
+
+    <!-- Seu conteúdo do Dashboard aqui -->
+    <div class="form-container">
+        <h2>Registrar Abastecimento</h2>
+        <form method="POST">
+            <label for="data">Data do Abastecimento:</label>
+            <input type="date" name="data" required><br>
+
+            <label for="onibus">Ônibus:</label>
+            <input type="text" name="onibus" required><br>
+
+            <label for="litros">Litros Abastecidos:</label>
+            <input type="number" name="litros" step="0.1" required><br>
+
+            <label for="responsavel">Responsável pelo Abastecimento:</label>
+            <input type="text" name="responsavel" required><br>
+
+            <button type="submit">Registrar</button>
+        </form>
+    </div>
+
+    <div class="records-container">
+        <h2>Últimos Abastecimentos</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Data</th>
+                    <th>Ônibus</th>
+                    <th>Litros</th>
+                    <th>Responsável</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for registro in registros %}
+                <tr>
+                    <td>{{ registro.data }}</td>
+                    <td>{{ registro.onibus }}</td>
+                    <td>{{ registro.litros }}</td>
+                    <td>{{ registro.responsavel }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="totals-container">
+        <h3>Total Abastecido</h3>
+        <p><strong>Litros:</strong> {{ total_litros }}</p>
+        <!-- Removido o valor -->
+    </div>
+</div>
+
+</body>
+</html>

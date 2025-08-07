@@ -1,0 +1,128 @@
+from flask import Flask, render_template, request, redirect, url_for, flash, session
+import json
+from sheets import enviar_para_google_sheets, carregar_dados, salvar_dados
+
+app = Flask(__name__)
+app.secret_key = "segredo"  # Usado para sessões (flash messages)
+
+# Dicionário de bases e senhas com tipo de usuário
+bases_senhas = {
+    "admin": {"senha": "admin123", "tipo": "admin"},
+    "uruguaiana": {"senha": "senhaUruguaiana", "tipo": "base"},
+    "bage": {"senha": "senhaBage", "tipo": "base"}
+}
+
+# Página de login
+@app.route('/', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        base = request.form['base']
+        senha = request.form['senha']
+        
+        # Verifica se as credenciais são válidas
+        if base in bases_senhas and bases_senhas[base]["senha"] == senha:
+            tipo_usuario = bases_senhas[base]["tipo"]
+            
+            # Armazena a base e o tipo de usuário na sessão
+            session['base'] = base
+            session['tipo_usuario'] = tipo_usuario
+            
+            # Redireciona com base no tipo de usuário
+            if tipo_usuario == "admin":
+                return redirect(url_for('admin_dashboard'))  # Página de admin
+            elif tipo_usuario == "base":
+                return redirect(url_for('dashboard', base=base))  # Página da base (Uruguaiana ou Bagé)
+        else:
+            flash('Credenciais inválidas', 'error')
+    
+    return render_template('login.html')
+
+# Função de logout
+@app.route('/logout')
+def logout():
+    # Remove as variáveis da sessão
+    session.clear()
+    flash('Você foi desconectado com sucesso!', 'success')
+    return redirect(url_for('login'))
+
+# Página do dashboard do admin
+@app.route('/admin_dashboard', methods=['GET', 'POST'])
+def admin_dashboard():
+    if 'tipo_usuario' not in session or session['tipo_usuario'] != 'admin':
+        return redirect(url_for('login'))  # Redireciona para login se não for admin
+    
+    # Carrega os totais de abastecimento para as bases
+    dados = carregar_dados()
+    total_uruguaiana = sum(registro['litros'] for registro in dados if registro['base'] == 'uruguaiana')
+    total_bage = sum(registro['litros'] for registro in dados if registro['base'] == 'bage')
+    
+    return render_template('admin_dashboard.html', total_uruguaiana=total_uruguaiana, total_bage=total_bage)
+
+# Página do dashboard para a base
+@app.route('/dashboard/<base>', methods=['GET', 'POST'])
+def dashboard(base):
+    if 'tipo_usuario' not in session or session['tipo_usuario'] != 'base':
+        return redirect(url_for('login'))  # Redireciona para login se não for uma base
+    
+    if request.method == 'POST':
+        # Registro de abastecimento
+        data = request.form['data']
+        onibus = request.form['onibus']
+        litros = float(request.form['litros'])
+        responsavel = request.form['responsavel']
+        
+        novo_registro = {
+            "id": len(carregar_dados()) + 1,  # Gerando um id único para cada registro
+            "data": data,
+            "onibus": onibus,
+            "litros": litros,
+            "responsavel": responsavel,
+            "base": base
+        }
+        
+        # Salva o registro no arquivo local e envia para o Google Sheets
+        dados = carregar_dados()
+        dados.append(novo_registro)
+        salvar_dados(dados)
+        if enviar_para_google_sheets(novo_registro):  # Verifica se o envio foi bem-sucedido
+            flash('Registro de abastecimento salvo com sucesso!', 'success')
+        else:
+            flash('Falha ao registrar no Google Sheets. Tente novamente.', 'error')
+        
+        return redirect(url_for('dashboard', base=base))
+    
+    # Carrega os registros de abastecimento para a base
+    dados = carregar_dados()
+    registros = [registro for registro in dados if registro['base'] == base]
+    total_litros = sum(registro['litros'] for registro in registros)
+    
+    return render_template('dashboard.html', base=base, registros=registros, total_litros=total_litros)
+
+# Excluir um registro
+@app.route('/delete/<base>/<int:id>', methods=['GET'])
+def delete_registro(base, id):
+    dados = carregar_dados()
+    dados = [registro for registro in dados if not (registro['base'] == base and registro['id'] == id)]
+    salvar_dados(dados)
+    flash('Registro excluído com sucesso!', 'success')
+    return redirect(url_for('dashboard', base=base))
+
+# Editar um registro
+@app.route('/edit/<base>/<int:id>', methods=['GET', 'POST'])
+def edit_registro(base, id):
+    dados = carregar_dados()
+    registro = next((r for r in dados if r['base'] == base and r['id'] == id), None)
+    
+    if request.method == 'POST':
+        registro['data'] = request.form['data']
+        registro['onibus'] = request.form['onibus']
+        registro['litros'] = float(request.form['litros'])
+        registro['responsavel'] = request.form['responsavel']
+        salvar_dados(dados)
+        flash('Registro atualizado com sucesso!', 'success')
+        return redirect(url_for('dashboard', base=base))
+    
+    return render_template('editar.html', registro=registro)
+
+if __name__ == '__main__':
+    app.run(debug=True)

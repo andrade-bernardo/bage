@@ -1,0 +1,16 @@
+[
+  {
+    "data": "2025-08-06 10:30:00",
+    "motorista": "Motorista1",
+    "litros": 50,
+    "valor": 200.0,
+    "base": "base1"
+  },
+  {
+    "data": "2025-08-06 14:00:00",
+    "motorista": "Motorista2",
+    "litros": 40,
+    "valor": 160.0,
+    "base": "base2"
+  }
+]

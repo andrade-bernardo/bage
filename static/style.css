@@ -1,0 +1,210 @@
+/* Reset de margens e padding */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body */
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    padding: 0 20px;
+}
+
+/* Container principal */
+.container {
+    width: 100%;
+    max-width: 600px;
+    padding: 40px;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+/* Estilos dos títulos */
+h1, h2 {
+    color: #007aff;
+    margin-bottom: 20px;
+}
+
+h1 {
+    font-size: 32px;
+}
+
+h2 {
+    font-size: 24px;
+}
+
+p {
+    font-size: 18px;
+    margin-bottom: 30px;
+}
+
+/* Estilos do formulário */
+input, button {
+    width: 100%;
+    padding: 14px;
+    margin: 12px 0;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    box-sizing: border-box;
+    transition: border 0.3s ease, box-shadow 0.3s ease;
+}
+
+input:focus, button:hover {
+    border-color: #007aff;
+    box-shadow: 0 0 10px rgba(0, 122, 255, 0.2);
+    outline: none;
+}
+
+/* Estilo do botão */
+button {
+    background-color: #007aff;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #0051a8;
+}
+
+/* Mensagens de erro */
+.message-container .error-message {
+    margin-top: 20px;
+    color: red;
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+.message-container ul {
+    list-style: none;
+}
+
+/* Links (no painel de controle) */
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+ul li {
+    margin: 15px 0;
+}
+
+ul li a {
+    text-decoration: none;
+    color: #007aff;
+    font-size: 18px;
+    padding: 10px 20px;
+    border: 1px solid #007aff;
+    border-radius: 10px;
+    display: inline-block;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+ul li a:hover {
+    background-color: #007aff;
+    color: white;
+}
+
+/* Ajustes para o painel do administrador */
+.admin-container, .dashboard-container {
+    width: 100%;
+    max-width: 800px;
+    padding: 40px;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.admin-container h1, .dashboard-container h1 {
+    color: #007aff;
+    font-size: 32px;
+    margin-bottom: 20px;
+}
+
+.admin-container p, .dashboard-container p {
+    font-size: 18px;
+    margin-bottom: 30px;
+}
+
+/* Tabela */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+table th, table td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+table th {
+    background-color: #f4f4f4;
+    color: #333;
+    font-weight: 600;
+}
+
+table td {
+    font-size: 16px;
+    color: #555;
+}
+
+table tr:hover {
+    background-color: #f4f4f4;
+}
+
+/* Ajustes para o formulário de registro */
+.form-container input {
+    margin-bottom: 10px;
+}
+
+.logout-btn {
+    background-color: #e74c3c;  /* Vermelho claro */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.logout-btn:hover {
+    background-color: #c0392b;  /* Vermelho escuro */
+}
+
+/* Ajustes de Responsividade */
+@media (max-width: 600px) {
+    .container, .admin-container, .dashboard-container {
+        padding: 20px;
+        margin: 10px;
+    }
+
+    input, button {
+        font-size: 14px;
+    }
+
+    h1 {
+        font-size: 28px;
+    }
+
+    h2 {
+        font-size: 20px;
+    }
+}

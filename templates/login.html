@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Controle de Abastecimento</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="container">
+    <div class="form-container">
+        <h1>Controle de Abastecimento</h1>
+        <h2>Login</h2>
+        <form method="POST">
+            <input type="text" name="base" placeholder="Nome da Base" required><br>
+            <input type="password" name="senha" placeholder="Senha" required><br>
+            <button type="submit">Entrar</button>
+        </form>
+
+        <div class="message-container">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="error-message">
+                        <ul>
+                            {% for category, message in messages %}
+                                <li>{{ message }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+            {% endwith %}
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

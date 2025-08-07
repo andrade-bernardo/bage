@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar - Controle de Abastecimento</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="container">
+    <h1>Editar Registro de Abastecimento</h1>
+
+    <div class="form-container">
+        <h2>Alterar os dados do abastecimento</h2>
+        
+        <form method="POST">
+            <input type="date" name="data" value="{{ registro.data }}" required><br>
+            <input type="text" name="motorista" value="{{ registro.motorista }}" required><br>
+            <input type="number" name="litros" value="{{ registro.litros }}" step="0.1" required><br>
+            <input type="number" name="valor" value="{{ registro.valor }}" step="0.1" required><br>
+            
+            <button type="submit">Salvar Alterações</button>
+        </form>
+    </div>
+
+    <div class="back-container">
+        <a href="{{ url_for('dashboard', base=base) }}">Voltar para o Dashboard</a>
+    </div>
+</div>
+
+</body>
+</html>
