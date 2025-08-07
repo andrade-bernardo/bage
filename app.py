@@ -55,8 +55,7 @@ def admin_dashboard():
     # Carrega os dados de abastecimento
     dados = carregar_dados()
     
-    bases = ['uruguaiana', 'bage']  # Bases a serem visualizadas pelo admin
-    bases_dados = {}
+    # Filtra registros das bases
     registros_uruguaiana = [registro for registro in dados if registro['base'] == 'uruguaiana']
     registros_bage = [registro for registro in dados if registro['base'] == 'bage']
     
@@ -69,38 +68,11 @@ def admin_dashboard():
                            total_uruguaiana=total_uruguaiana, 
                            total_bage=total_bage)
 
-# Página do dashboard para a base
+# Alteração da lógica para ver os registros sem precisar de login nas bases
 @app.route('/dashboard/<base>', methods=['GET', 'POST'])
 def dashboard(base):
-    if 'tipo_usuario' not in session or session['tipo_usuario'] != 'base':
-        return redirect(url_for('login'))  # Redireciona para login se não for uma base
-    
-    if request.method == 'POST':
-        # Registro de abastecimento
-        data = request.form['data']
-        onibus = request.form['onibus']
-        litros = float(request.form['litros'])
-        responsavel = request.form['responsavel']
-        
-        novo_registro = {
-            "id": len(carregar_dados()) + 1,  # Gerando um id único para cada registro
-            "data": data,
-            "onibus": onibus,
-            "litros": litros,
-            "responsavel": responsavel,
-            "base": base
-        }
-        
-        # Salva o registro no arquivo local e envia para o Google Sheets
-        dados = carregar_dados()
-        dados.append(novo_registro)
-        salvar_dados(dados)
-        if enviar_para_google_sheets(novo_registro):  # Verifica se o envio foi bem-sucedido
-            flash('Registro de abastecimento salvo com sucesso!', 'success')
-        else:
-            flash('Falha ao registrar no Google Sheets. Tente novamente.', 'error')
-        
-        return redirect(url_for('dashboard', base=base))
+    if 'tipo_usuario' not in session or session['tipo_usuario'] not in ['base', 'admin']:
+        return redirect(url_for('login'))  # Redireciona para login se não for admin ou base
     
     # Carrega os registros de abastecimento para a base
     dados = carregar_dados()
@@ -116,7 +88,7 @@ def delete_registro(base, id):
     dados = [registro for registro in dados if not (registro['base'] == base and registro['id'] == id)]
     salvar_dados(dados)
     flash('Registro excluído com sucesso!', 'success')
-    return redirect(url_for('admin_dashboard'))  # Redireciona para a página de admin
+    return redirect(url_for('admin_dashboard'))  # Redireciona para a página de admin após exclusão
 
 # Editar um registro
 @app.route('/edit/<base>/<int:id>', methods=['GET', 'POST'])
@@ -131,9 +103,10 @@ def edit_registro(base, id):
         registro['responsavel'] = request.form['responsavel']
         salvar_dados(dados)
         flash('Registro atualizado com sucesso!', 'success')
-        return redirect(url_for('admin_dashboard'))  # Redireciona para a página de admin
+        return redirect(url_for('admin_dashboard'))  # Redireciona para a página de admin após edição
     
     return render_template('editar.html', registro=registro)
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    port = int(os.environ.get('PORT', 5000))  # Usa a variável de ambiente PORT
+    app.run(debug=False, host='0.0.0.0', port=port)
