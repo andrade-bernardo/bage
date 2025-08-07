@@ -1,6 +1,8 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 import json
+import os
 from sheets import enviar_para_google_sheets, carregar_dados, salvar_dados
+import gunicorn
 
 app = Flask(__name__)
 app.secret_key = "segredo"  # Usado para sessões (flash messages)
@@ -125,4 +127,4 @@ def edit_registro(base, id):
     return render_template('editar.html', registro=registro)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))  # Para render e produção
