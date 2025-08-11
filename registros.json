@@ -1,0 +1,10 @@
+[
+    {
+        "id": 1,
+        "base": "bage",
+        "data": "2025-08-07",
+        "onibus": "1596",
+        "litros": 322.0,
+        "responsavel": "testador2"
+    }
+]
