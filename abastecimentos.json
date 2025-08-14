@@ -1,0 +1,29 @@
+[
+    {
+        "id": 3,
+        "base": "bage",
+        "data": "2025-08-04",
+        "onibus": "2054",
+        "litros": 2.0,
+        "responsavel": "testador2",
+        "hodometro": 22.0
+    },
+    {
+        "id": 2,
+        "base": "bage",
+        "data": "2025-08-01",
+        "onibus": "2067",
+        "litros": 12.0,
+        "responsavel": "testador2",
+        "hodometro": 1.0
+    },
+    {
+        "id": 3,
+        "base": "bage",
+        "data": "2025-08-02",
+        "onibus": "d",
+        "litros": 1.0,
+        "responsavel": "testador2",
+        "hodometro": 12.0
+    }
+]

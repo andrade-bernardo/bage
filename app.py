@@ -2,20 +2,14 @@ from flask import Flask, render_template, request, redirect, url_for, flash, ses
 import json
 import os
 
+# Inicializa o Flask
 app = Flask(__name__)
 app.secret_key = "segredo"  # Usado para sessões (flash messages)
-
-# Dicionário de bases e senhas com tipo de usuário
-bases_senhas = {
-    "admin": {"senha": "admin123", "tipo": "admin"},
-    "uruguaiana": {"senha": "senhaUruguaiana", "tipo": "base"},
-    "bage": {"senha": "senhaBage", "tipo": "base"}
-}
 
 # Função para carregar os dados (registros de abastecimento)
 def carregar_dados():
     try:
-        with open('registros.json', 'r') as file:
+        with open('abastecimentos.json', 'r') as file:
             dados = json.load(file)
     except FileNotFoundError:
         dados = []  # Se o arquivo não for encontrado, retorna uma lista vazia
@@ -23,8 +17,15 @@ def carregar_dados():
 
 # Função para salvar os dados no arquivo JSON
 def salvar_dados(dados):
-    with open('registros.json', 'w') as file:
+    with open('abastecimentos.json', 'w') as file:
         json.dump(dados, file, indent=4)
+
+# Dicionário de bases e senhas com tipo de usuário
+bases_senhas = {
+    "admin": {"senha": "admin123", "tipo": "admin"},
+    "uruguaiana": {"senha": "senhaUruguaiana", "tipo": "base"},
+    "bage": {"senha": "senhaBage", "tipo": "base"}
+}
 
 # Página de login
 @app.route('/', methods=['GET', 'POST'])
@@ -89,6 +90,7 @@ def dashboard(base):
     
     # Carrega os registros de abastecimento para a base
     dados = carregar_dados()
+    registros = [registro for registro in dados if registro['base'] == base]
 
     if request.method == 'POST':
         # Pegando os dados do formulário
@@ -96,28 +98,27 @@ def dashboard(base):
         onibus = request.form['onibus']
         litros = float(request.form['litros'])
         responsavel = request.form['responsavel']
+        hodometro = float(request.form['hodometro'])  # Campo do hodômetro
         
         # Criação de um novo registro
         novo_registro = {
             'id': len(dados) + 1,  # ID único
-            'base': base,  # Base de onde o registro é
+            'base': base,
             'data': data,
             'onibus': onibus,
             'litros': litros,
-            'responsavel': responsavel
+            'responsavel': responsavel,
+            'hodometro': hodometro  # Adicionando o hodômetro
         }
         
         # Adiciona o novo registro à lista de dados
         dados.append(novo_registro)
         
-        # Salva os dados atualizados no arquivo
+        # Salva os dados atualizados no arquivo JSON
         salvar_dados(dados)
 
-    # Filtra os registros da base específica (Uruguaiana ou Bagé)
-    registros = [registro for registro in dados if registro['base'] == base]
-    
     # Calcula o total de litros abastecidos
-    total_litros = sum(registro['litros'] for registro in registros)
+    total_litros = sum([registro['litros'] for registro in registros])
     
     return render_template('dashboard.html', base=base, registros=registros, total_litros=total_litros)
 
@@ -141,6 +142,7 @@ def edit_registro(base, id):
         registro['onibus'] = request.form['onibus']
         registro['litros'] = float(request.form['litros'])
         registro['responsavel'] = request.form['responsavel']
+        registro['hodometro'] = float(request.form['hodometro'])  # Atualizando o hodômetro
         salvar_dados(dados)
         flash('Registro atualizado com sucesso!', 'success')
         return redirect(url_for('admin_dashboard'))  # Redireciona para a página de admin após edição
@@ -149,5 +151,4 @@ def edit_registro(base, id):
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))  # Usa a variável de ambiente PORT
-    app.run(debug=False, host='0.0.0.0', port=port)
-
+    app.run(debug=True, host='0.0.0.0', port=port)  # Habilitando o debug

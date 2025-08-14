@@ -5,16 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Controle de Abastecimento</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <!-- Ícones FontAwesome para Editar e Excluir -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
 <body>
 
 <div class="container">
     <h1>Controle de Abastecimento - {{ base }}</h1>
-
-    <!-- Botão de Logout -->
-    <a href="{{ url_for('logout') }}">
-        <button class="logout-btn">Logout</button>
-    </a>
 
     <!-- Formulário de Registro de Abastecimento -->
     <div class="form-container">
@@ -32,6 +29,9 @@
             <label for="responsavel">Responsável pelo Abastecimento:</label>
             <input type="text" name="responsavel" required><br>
 
+            <label for="hodometro">Hodômetro:</label>
+            <input type="number" name="hodometro" step="0.1" required><br>
+
             <button type="submit">Registrar</button>
         </form>
     </div>
@@ -46,6 +46,8 @@
                     <th>Ônibus</th>
                     <th>Litros</th>
                     <th>Responsável</th>
+                    <th>Hodômetro</th>
+                    <th>Ações</th>
                 </tr>
             </thead>
             <tbody>
@@ -55,6 +57,11 @@
                     <td>{{ registro.onibus }}</td>
                     <td>{{ registro.litros }}</td>
                     <td>{{ registro.responsavel }}</td>
+                    <td>{{ registro.hodometro }}</td>
+                    <td>
+                        <a href="{{ url_for('edit_registro', base=base, id=registro.id) }}" class="btn-edit"><i class="fas fa-edit"></i> Editar</a> |
+                        <a href="{{ url_for('delete_registro', base=base, id=registro.id) }}" class="btn-delete" onclick="return confirm('Tem certeza que deseja excluir?')"><i class="fas fa-trash-alt"></i> Excluir</a>
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -66,8 +73,14 @@
         <h3>Total Abastecido</h3>
         <p><strong>Litros:</strong> {{ total_litros }}</p>
     </div>
+
+    <!-- Botão de Logout ao final da página -->
+    <div class="logout-container">
+        <a href="{{ url_for('logout') }}">
+            <button class="logout-btn">Logout</button>
+        </a>
+    </div>
 </div>
 
 </body>
 </html>
-

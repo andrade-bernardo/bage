@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Painel de Controle - Admin</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <!-- Ícones FontAwesome para Editar e Excluir -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
 <body>
 
@@ -12,9 +14,11 @@
     <h1>Painel de Controle - Admin</h1>
 
     <!-- Botão de Logout -->
-    <a href="{{ url_for('logout') }}">
-        <button class="logout-btn">Logout</button>
-    </a>
+    <div class="logout-container">
+        <a href="{{ url_for('logout') }}">
+            <button class="logout-btn">Logout</button>
+        </a>
+    </div>
 
     <h3>Bases e Totais de Abastecimento</h3>
     <ul>
@@ -35,8 +39,8 @@
         {% for registro in registros_uruguaiana %}
         <li>
             {{ registro.data }} - {{ registro.onibus }} - {{ registro.litros }} litros 
-            <a href="{{ url_for('edit_registro', base='uruguaiana', id=registro.id) }}">Editar</a> |
-            <a href="{{ url_for('delete_registro', base='uruguaiana', id=registro.id) }}" onclick="return confirm('Tem certeza que deseja excluir?')">Excluir</a>
+            <a href="{{ url_for('edit_registro', base='uruguaiana', id=registro.id) }}" class="btn-edit"><i class="fas fa-edit"></i> Editar</a> |
+            <a href="{{ url_for('delete_registro', base='uruguaiana', id=registro.id) }}" class="btn-delete" onclick="return confirm('Tem certeza que deseja excluir?')"><i class="fas fa-trash-alt"></i> Excluir</a>
         </li>
         {% endfor %}
     </ul>
@@ -46,8 +50,8 @@
         {% for registro in registros_bage %}
         <li>
             {{ registro.data }} - {{ registro.onibus }} - {{ registro.litros }} litros 
-            <a href="{{ url_for('edit_registro', base='bage', id=registro.id) }}">Editar</a> |
-            <a href="{{ url_for('delete_registro', base='bage', id=registro.id) }}" onclick="return confirm('Tem certeza que deseja excluir?')">Excluir</a>
+            <a href="{{ url_for('edit_registro', base='bage', id=registro.id) }}" class="btn-edit"><i class="fas fa-edit"></i> Editar</a> |
+            <a href="{{ url_for('delete_registro', base='bage', id=registro.id) }}" class="btn-delete" onclick="return confirm('Tem certeza que deseja excluir?')"><i class="fas fa-trash-alt"></i> Excluir</a>
         </li>
         {% endfor %}
     </ul>
@@ -55,5 +59,4 @@
 
 </body>
 </html>
-
 
