@@ -8,41 +8,47 @@
 /* Body */
 body {
     font-family: 'Roboto', sans-serif;
-    background-color: #f9f9f9;
+    background-color: #f2f2f2;
     color: #333;
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
     padding: 20px;
+    margin: 0;
 }
 
 /* Container principal */
 .container {
     width: 100%;
-    max-width: 800px;
-    padding: 30px;
+    max-width: 900px;
+    padding: 40px;
     background-color: #fff;
     border-radius: 12px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     text-align: center;
+    margin-top: 40px;
 }
 
 /* Estilos dos títulos */
-h1, h2 {
+h1 {
+    font-size: 36px;
     color: #007aff;
     margin-bottom: 20px;
 }
 
-h1 {
-    font-size: 36px;
-}
-
 h2 {
     font-size: 24px;
+    color: #555;
+    margin-bottom: 30px;
 }
 
-/* Estilos gerais */
+h3 {
+    font-size: 20px;
+    color: #007aff;
+    margin-bottom: 20px;
+}
+
 p {
     font-size: 18px;
     margin-bottom: 30px;
@@ -56,9 +62,10 @@ form {
     align-items: center;
 }
 
+/* Campos de input */
 input, button {
     width: 100%;
-    padding: 12px;
+    padding: 14px;
     margin: 12px 0;
     border-radius: 8px;
     border: 1px solid #ccc;
@@ -67,16 +74,16 @@ input, button {
     transition: all 0.3s ease;
 }
 
-/* Estilo para o campo de data */
-input[type="date"], input[type="number"], input[type="text"] {
+/* Estilo para os inputs de data, texto e número */
+input[type="date"], input[type="text"], input[type="number"] {
     width: 100%;
-    padding: 14px;
-    margin: 12px 0;
+    padding: 12px;
     border-radius: 8px;
     border: 1px solid #ccc;
+    margin-top: 5px;
 }
 
-/* Foco no campo de data */
+/* Foco nos campos e no botão */
 input:focus, button:hover {
     border-color: #007aff;
     box-shadow: 0 0 8px rgba(0, 122, 255, 0.2);
@@ -89,6 +96,7 @@ button {
     color: white;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    border: none;
 }
 
 button:hover {
@@ -97,10 +105,9 @@ button:hover {
 
 /* Estilo do botão de logout */
 .logout-btn {
-    background-color: #e74c3c;  /* Vermelho claro */
+    background-color: #e74c3c;
     color: white;
     padding: 10px 20px;
-    border: none;
     border-radius: 5px;
     font-size: 16px;
     cursor: pointer;
@@ -109,7 +116,7 @@ button:hover {
 }
 
 .logout-btn:hover {
-    background-color: #c0392b;  /* Vermelho escuro */
+    background-color: #c0392b;
 }
 
 /* Tabela */
@@ -120,24 +127,24 @@ table {
 }
 
 table th, table td {
-    padding: 15px;
+    padding: 14px;
     text-align: left;
     border-bottom: 1px solid #eee;
+    font-size: 16px;
 }
 
 table th {
-    background-color: #f4f4f4;
+    background-color: #f9f9f9;
     color: #333;
     font-weight: 600;
 }
 
 table td {
-    font-size: 16px;
     color: #555;
 }
 
 table tr:hover {
-    background-color: #f4f4f4;
+    background-color: #f1f1f1;
 }
 
 /* Botões de Editar e Excluir */
@@ -170,7 +177,7 @@ table tr:hover {
 }
 
 /* Ajustes de Responsividade */
-@media (max-width: 600px) {
+@media (max-width: 768px) {
     .container {
         padding: 20px;
         margin-top: 10px;
@@ -181,14 +188,41 @@ table tr:hover {
     }
 
     h1 {
-        font-size: 28px;
+        font-size: 30px;
+    }
+
+    h2 {
+        font-size: 22px;
+    }
+
+    table th, table td {
+        font-size: 14px;
+    }
+
+    .logout-btn {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 15px;
+        margin-top: 5px;
+    }
+
+    input, button {
+        font-size: 12px;
+    }
+
+    h1 {
+        font-size: 26px;
     }
 
     h2 {
         font-size: 20px;
     }
 
-    table td, table th {
-        font-size: 14px;
+    table th, table td {
+        font-size: 12px;
     }
 }
