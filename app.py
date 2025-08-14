@@ -116,6 +116,9 @@ def dashboard(base):
         
         # Salva os dados atualizados no arquivo JSON
         salvar_dados(dados)
+        
+        # Redireciona para a página de dashboard novamente, com dados atualizados
+        return redirect(url_for('dashboard', base=base))  # Redireciona para a página atualizada
 
     # Calcula o total de litros abastecidos
     total_litros = sum([registro['litros'] for registro in registros])
