@@ -1,6 +1,8 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, session
+from flask import Flask, render_template, request, redirect, url_for, flash, session, send_file
 import json
 import os
+from openpyxl import Workbook
+import csv
 
 # Inicializa o Flask
 app = Flask(__name__)
@@ -19,6 +21,65 @@ def carregar_dados():
 def salvar_dados(dados):
     with open('abastecimentos.json', 'w') as file:
         json.dump(dados, file, indent=4)
+
+# Função para gerar o arquivo .xlsx
+def exportar_para_excel(dados):
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Abastecimento"
+    
+    # Cabeçalho da planilha
+    cabecalho = ['ID', 'Base', 'Data', 'Ônibus', 'Litros', 'Responsável', 'Hodômetro']
+    ws.append(cabecalho)
+
+    # Adicionando os registros na planilha
+    for registro in dados:
+        ws.append([registro['id'], registro['base'], registro['data'], registro['onibus'], registro['litros'], registro['responsavel'], registro['hodometro']])
+    
+    # Caminho do arquivo
+    caminho_arquivo = "dados_abastecimento.xlsx"
+    wb.save(caminho_arquivo)
+
+    return caminho_arquivo
+
+# Função para gerar o arquivo .csv
+def exportar_para_csv(dados):
+    caminho_arquivo = "dados_abastecimento.csv"
+    
+    # Abre o arquivo CSV para escrita
+    with open(caminho_arquivo, mode='w', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow(['ID', 'Base', 'Data', 'Ônibus', 'Litros', 'Responsável', 'Hodômetro'])
+        
+        # Adiciona os registros
+        for registro in dados:
+            writer.writerow([registro['id'], registro['base'], registro['data'], registro['onibus'], registro['litros'], registro['responsavel'], registro['hodometro']])
+    
+    return caminho_arquivo
+
+# Rota para exportar dados como .xlsx
+@app.route('/exportar_excel/<base>', methods=['GET'])
+def exportar_excel(base):
+    dados = carregar_dados()  # Carrega os dados
+    registros_base = [registro for registro in dados if registro['base'] == base]
+    
+    # Chama a função de exportação
+    caminho_arquivo = exportar_para_excel(registros_base)
+    
+    # Envia o arquivo para download
+    return send_file(caminho_arquivo, as_attachment=True)
+
+# Rota para exportar dados como .csv
+@app.route('/exportar_csv/<base>', methods=['GET'])
+def exportar_csv(base):
+    dados = carregar_dados()  # Carrega os dados
+    registros_base = [registro for registro in dados if registro['base'] == base]
+    
+    # Chama a função de exportação
+    caminho_arquivo = exportar_para_csv(registros_base)
+    
+    # Envia o arquivo para download
+    return send_file(caminho_arquivo, as_attachment=True)
 
 # Dicionário de bases e senhas com tipo de usuário
 bases_senhas = {
@@ -73,8 +134,9 @@ def admin_dashboard():
     registros_uruguaiana = [registro for registro in dados if registro['base'] == 'uruguaiana']
     registros_bage = [registro for registro in dados if registro['base'] == 'bage']
     
-    total_uruguaiana = sum(registro['litros'] for registro in registros_uruguaiana)
-    total_bage = sum(registro['litros'] for registro in registros_bage)
+    # Força a conversão para float e soma os litros
+    total_uruguaiana = sum([float(registro['litros']) if isinstance(registro['litros'], (int, float)) else 0 for registro in registros_uruguaiana])
+    total_bage = sum([float(registro['litros']) if isinstance(registro['litros'], (int, float)) else 0 for registro in registros_bage])
     
     return render_template('admin_dashboard.html', 
                            registros_uruguaiana=registros_uruguaiana, 
@@ -121,7 +183,7 @@ def dashboard(base):
         return redirect(url_for('dashboard', base=base))  # Redireciona para a página atualizada
 
     # Calcula o total de litros abastecidos
-    total_litros = sum([registro['litros'] for registro in registros])
+    total_litros = sum([float(registro['litros']) if isinstance(registro['litros'], (int, float)) else 0 for registro in registros])
     
     return render_template('dashboard.html', base=base, registros=registros, total_litros=total_litros)
 

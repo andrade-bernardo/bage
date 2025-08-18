@@ -36,6 +36,18 @@
         </form>
     </div>
 
+    <!-- Botões de Exportação -->
+    <div class="export-buttons">
+        <!-- Botões de Exportação -->
+        <a href="{{ url_for('exportar_excel', base=base) }}">
+            <button>Exportar para Excel</button>
+        </a>
+
+        <a href="{{ url_for('exportar_csv', base=base) }}">
+            <button>Exportar para CSV</button>
+        </a>
+    </div>
+
     <!-- Exibição dos Últimos Registros de Abastecimento -->
     <div class="records-container">
         <h2>Últimos Abastecimentos</h2>

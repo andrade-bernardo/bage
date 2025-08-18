@@ -176,6 +176,29 @@ table tr:hover {
     background-color: #e74c3c;
 }
 
+/* Botões de Exportação */
+.export-buttons {
+    margin-bottom: 20px;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.export-buttons button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #007aff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.export-buttons button:hover {
+    background-color: #0051a8;
+}
+
 /* Ajustes de Responsividade */
 @media (max-width: 768px) {
     .container {
@@ -226,3 +249,4 @@ table tr:hover {
         font-size: 12px;
     }
 }
+
